@@ -3,10 +3,12 @@ package com.jorder.certifications.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jorder.certifications.dto.StudentCertificationAnswerDto;
 import com.jorder.certifications.dto.VerifyHasCertificationDTO;
 import com.jorder.certifications.service.StudentService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -17,6 +19,8 @@ public class StudentsController {
     
     @Autowired
     StudentService studentService;
+
+
     
     @PostMapping("/verifyIfHasCertification")
     public String verifyIfHasCertification(@RequestBody VerifyHasCertificationDTO verifyIfHasCertification) {
@@ -26,6 +30,12 @@ public class StudentsController {
         }
         return "Usuário pode fazer a prova.";
     }
+
+    @PostMapping("/certification/answer")
+    public StudentCertificationAnswerDto certificationAnswer(@RequestBody StudentCertificationAnswerDto dto) {
+        return studentService.studentCertificationAnswers(dto);
+    }
+    
     
     
 }
