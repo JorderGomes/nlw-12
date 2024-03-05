@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jorder.certifications.dto.StudentCertificationAnswerDto;
 import com.jorder.certifications.dto.VerifyHasCertificationDTO;
+import com.jorder.certifications.models.CertificationsStudent;
 import com.jorder.certifications.service.StudentService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class StudentsController {
     }
 
     @PostMapping("/certification/answer")
-    public StudentCertificationAnswerDto certificationAnswer(@RequestBody StudentCertificationAnswerDto dto) {
+    public CertificationsStudent certificationAnswer(@RequestBody StudentCertificationAnswerDto dto) {
         return studentService.studentCertificationAnswers(dto);
     }
     

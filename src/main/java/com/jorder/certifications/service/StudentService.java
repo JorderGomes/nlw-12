@@ -3,6 +3,7 @@ package com.jorder.certifications.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,10 +40,16 @@ public class StudentService {
         return false;
     }
 
-    public StudentCertificationAnswerDto studentCertificationAnswers(StudentCertificationAnswerDto dto) {
+    public CertificationsStudent studentCertificationAnswers(StudentCertificationAnswerDto dto) {
 
         // Buscar as alternativas das perguntas
         List<Question> questions = questionRepository.findByTechnology(dto.getTechnology());
+        List<AnswersCertification> answersCertifications = new ArrayList<>();
+
+        int grade = 0;
+        int qtdTotalQuestions = dto.getQuestionAndAnswers().size();
+        AtomicInteger qtdCorrects = new AtomicInteger(0);
+
         dto.getQuestionAndAnswers()
                 .stream().forEach(questionAnswer -> {
                     var currentQuestion = questions.stream()
@@ -55,9 +62,17 @@ public class StudentService {
 
                     if (correctAlternative.getId().toString().equals(questionAnswer.getAlternativeId())) {
                         questionAnswer.setCorrect(true);
+                        qtdCorrects.incrementAndGet();
                     } else {
                         questionAnswer.setCorrect(false);
                     }
+
+                    var answerCertification = AnswersCertification.builder()
+                    .answerID(UUID.fromString(questionAnswer.getAlternativeId()))
+                    .questionID(UUID.fromString(questionAnswer.getQuestionId()))
+                    .isCorrect(questionAnswer.isCorrect())
+                    .build();
+                    answersCertifications.add(answerCertification);
 
                 });
 
@@ -73,9 +88,8 @@ public class StudentService {
             studentId = optStudent.get().getId();
         }
 
-        int grade = this.calculateGrade(dto.getQuestionAndAnswers());
-
-        List<AnswersCertification> answersCertifications = new ArrayList<>();
+        //int grade = this.calculateGrade(dto.getQuestionAndAnswers());
+        grade = (qtdCorrects.get() * 10) / qtdTotalQuestions;
 
         // Salvar as informações da certificação
         CertificationsStudent certificationsStudent = CertificationsStudent.builder()
@@ -84,7 +98,18 @@ public class StudentService {
                 .grade(grade)
                 .build();
 
-        return dto;
+        var certificationsStudentCreated = certificationStudentRepository.save(certificationsStudent);
+        
+        answersCertifications.stream().forEach(answersCertification -> {
+            answersCertification.setCertificationID(certificationsStudent.getId());
+            answersCertification.setCertificationStudent(certificationsStudent);
+        });
+
+        certificationsStudent.setAnswersCertifications(answersCertifications);
+
+        certificationStudentRepository.save(certificationsStudent);
+        
+        return certificationsStudentCreated;
     }
 
     public int calculateGrade(List<QuestionAndAnswerDto> questionAndAnswers) {
