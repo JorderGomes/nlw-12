@@ -3,6 +3,9 @@ package com.jorder.certifications.models;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,5 +32,6 @@ public class Student {
     private String email;
 
     @OneToMany(mappedBy = "student")
+    @JsonBackReference
     private List<CertificationsStudent> certificationsStudent;
 }

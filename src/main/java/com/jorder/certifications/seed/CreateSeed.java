@@ -7,7 +7,7 @@ import java.nio.file.Paths;
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+// import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 public class CreateSeed {
     
@@ -17,16 +17,16 @@ public class CreateSeed {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public static void main(String[] args) {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl("jdbc:postgresql://localhost:5434/certifications_db");
-        dataSource.setUsername("admin");
-        dataSource.setPassword("admin");
+    // public static void main(String[] args) {
+    //     DriverManagerDataSource dataSource = new DriverManagerDataSource();
+    //     dataSource.setDriverClassName("org.postgresql.Driver");
+    //     dataSource.setUrl("jdbc:postgresql://localhost:5434/certifications_db");
+    //     dataSource.setUsername("admin");
+    //     dataSource.setPassword("admin");
 
-        CreateSeed createSeed = new CreateSeed(dataSource);
-        createSeed.run(args);
-    }
+    //     CreateSeed createSeed = new CreateSeed(dataSource);
+    //     createSeed.run(args);
+    // }
 
     public void run(String... args) {
         executeSqlFile("src/main/resources/create.sql");

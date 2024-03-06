@@ -13,6 +13,9 @@ import com.jorder.certifications.models.CertificationsStudent;
 public interface CertificationStudentRepository extends JpaRepository<CertificationsStudent, UUID> {
     
     @Query("SELECT c FROM certifications c INNER JOIN c.student std WHERE std.email = :email AND c.technology = :technology")
-    List<CertificationStudentRepository> findByStudentEmailAndTechnology(String email, String technology);
+    List<CertificationsStudent> findByStudentEmailAndTechnology(String email, String technology);
     
+    @Query("SELECT c FROM certifications c ORDER BY c.grade DESC LIMIT 10")
+    List<CertificationsStudent> findTop10OrderByGradeDesc();
+
 }
