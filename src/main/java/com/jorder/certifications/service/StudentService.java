@@ -40,7 +40,13 @@ public class StudentService {
         return false;
     }
 
-    public CertificationsStudent studentCertificationAnswers(StudentCertificationAnswerDto dto) {
+    public CertificationsStudent studentCertificationAnswers(StudentCertificationAnswerDto dto) throws Exception {
+
+        var hasCertification = verifyIfHasCertification(new VerifyHasCertificationDTO(dto.getEmail(), dto.getTechnology()));
+
+        if (hasCertification) {
+            throw new Exception("Você já possui esta certificação.");
+        }
 
         // Buscar as alternativas das perguntas
         List<Question> questions = questionRepository.findByTechnology(dto.getTechnology());

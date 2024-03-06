@@ -9,6 +9,7 @@ import com.jorder.certifications.models.CertificationsStudent;
 import com.jorder.certifications.service.StudentService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 // import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,8 +34,12 @@ public class StudentsController {
     }
 
     @PostMapping("/certification/answer")
-    public CertificationsStudent certificationAnswer(@RequestBody StudentCertificationAnswerDto dto) {
-        return studentService.studentCertificationAnswers(dto);
+    public ResponseEntity<Object> certificationAnswer(@RequestBody StudentCertificationAnswerDto dto) {
+        try {
+            return ResponseEntity.ok(studentService.studentCertificationAnswers(dto));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
     
     
